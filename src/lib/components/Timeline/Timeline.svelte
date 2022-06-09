@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { session } from '$app/stores'
-
 	import Post from '$lib/components/Timeline/Post/Post.svelte'
+	import { http } from '$lib/hooks/useFetch'
 	import { Posts } from '$lib/stores/Posts'
 	import { afterUpdate, beforeUpdate } from 'svelte'
-
-	export let userId: string
+	import Loading from '../Loading.svelte'
+	import Thinking from './Thinking.svelte'
 
 	let div
 	let autoscroll
 
 	function refreshPosts() {
-		Posts.getPosts($session.id)
+		Posts.getPosts($session._id)
 	}
 
 	beforeUpdate(() => {
@@ -21,14 +21,22 @@
 	afterUpdate(() => {
 		if (autoscroll) div.scrollTo(0, div.scrollHeight)
 	})
+
+	$: posts = http.Get({
+		url: `/api/posts/`,
+	})
 </script>
 
-{#await Posts.getPosts(userId)}
-	<h1>Waiting...</h1>
-{:then}
-	<main class="col col-xl-8 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12">
-		<div id="newsfeed-items-grid" bind:this={div}>
-			{#each $Posts as post}
+<!-- <Thinking /> -->
+
+{#await posts}
+	<div class="loading">
+		<Loading />
+	</div>
+{:then data}
+	<main>
+		<div bind:this={div}>
+			{#each data as post}
 				<Post {post} />
 			{:else}
 				<article class="hentry post video">
@@ -38,35 +46,16 @@
 				</article>
 			{/each}
 		</div>
-		<span class="btn btn-control btn-more" on:click={refreshPosts}>
+		<!-- <span class="btn btn-control btn-more" on:click={refreshPosts}>
 			<svg class="olymp-three-dots-icon"><use xlink:href="#olymp-three-dots-icon" /> </svg>
-		</span>
+		</span> -->
 	</main>
 {/await}
 
-<!-- <main
-  class="col col-xl-8 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12"
->
-  <div id="newsfeed-items-grid">
-    {#each $Posts as post}
-      <Post {post} />
-    {:else}
-      <article class="hentry post video">
-        <div style="width: 100%; display: flex; justify-content: center;">
-          <p class="h1 text-center">No hay publicaciones a la vista</p>
-        </div>
-      </article>
-    {/each}
-  </div>
-  <a
-    id="load-more-button"
-    href="#/"
-    class="btn btn-control btn-more"
-    data-load-link="items-to-load.html"
-    data-container="newsfeed-items-grid"
-  >
-    <svg class="olymp-three-dots-icon"
-      ><use xlink:href="#olymp-three-dots-icon" />
-    </svg>
-  </a>
-</main> -->
+<style>
+	.loading {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+</style>

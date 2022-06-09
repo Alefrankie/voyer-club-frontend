@@ -1,6 +1,6 @@
 <script>
 	import { goto } from '$app/navigation'
-	import { http } from '$lib/hooks/http'
+	import { http } from '$lib/hooks/useFetch'
 	import { uppercaseString } from '$lib/utils/string'
 
 	/*let currentUser = {
@@ -18,7 +18,7 @@
 		username: '',
 		email: '',
 		password: '',
-		country: ''
+		country: '',
 	}
 
 	$: currentUser.firstName = uppercaseString(currentUser.firstName)
@@ -30,7 +30,7 @@
 	async function signUp() {
 		const msg = await http.Post({
 			url: '/users/',
-			body: currentUser
+			body: currentUser,
 		})
 		goto('/auth/sign-in')
 	}

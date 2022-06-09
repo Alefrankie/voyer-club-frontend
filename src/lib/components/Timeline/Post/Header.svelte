@@ -4,24 +4,42 @@
 	import Options from './Options.svelte'
 
 	export let post
-	export let inputDisabled
 </script>
 
-<div class="post__author author vcard inline-items">
-	<Avatar src={post.user.profilePhoto} />
-
-	<div class="author-date">
-		<a class="h6 post__author-name fn" href="/user/username">
-			{post.user.firstName}
-			{post.user.lastName}
+<main>
+	<Avatar src={post.user?.profilePhoto} />
+	<div class="details">
+		<a class="" href="/users/{post.user?._id}">
+			{post.user?.firstName || 'Nombre'}
+			{post.user?.lastName || 'Apellido'}
 		</a>
 
-		<div class="post__date">
-			<time class="published" datetime="2004-07-24T18:18">
-				{useFormatDate(post.createdAt)}
-			</time>
-		</div>
+		<time>
+			{useFormatDate(post?.createdAt)}
+		</time>
 	</div>
+</main>
 
-	<Options {post} bind:inputDisabled />
-</div>
+<Options {post} />
+
+<style>
+	main {
+		display: flex;
+	}
+
+	.details {
+		display: flex;
+		flex-direction: column;
+		margin-left: 0.5rem;
+	}
+	a {
+		color: var(--primary-color);
+		font-size: 15px;
+		font-weight: 600;
+	}
+
+	time {
+		color: var(--text-color);
+		font-size: 14px;
+	}
+</style>

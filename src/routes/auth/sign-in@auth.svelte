@@ -2,12 +2,12 @@
 	import { goto } from '$app/navigation'
 
 	import { session } from '$app/stores'
-	import { http } from '$lib/hooks/http'
+	import { http } from '$lib/hooks/useFetch'
 	import { uppercaseString } from '$lib/utils/string'
 
 	let currentUser = {
 		username: 'Diwaii',
-		password: '123456'
+		password: '123456',
 	}
 
 	$: currentUser.username = uppercaseString(currentUser.username)
@@ -15,18 +15,18 @@
 
 	let promise = null
 	async function signIn() {
-		promise = http.Post({
-			url: '/users/sign-in',
-			body: currentUser
+		promise = http.Get({
+			url: '/api/users/sign-in',
 		})
+		// promise = http.Post({
+		// 	url: '/api/users/sign-in',
+		// 	body: currentUser,
+		// })
 
-		const { user, token } = await promise
+		const { user } = await promise
 
-		if (user) {
-			session.set(user)
-			localStorage.setItem('token', token)
-			goto('/')
-		}
+		session.set({ ...$session, authenticated: true })
+		goto('/')
 
 		return promise
 	}
@@ -84,7 +84,7 @@
 					<center><button class="btn transparent"> Registrarse </button></center>
 				</a>
 			</div>
-			<img src="/img/base/portada.png" class="image" alt="IMAGEX" style="width: 80%" />
+			<!-- <img src="/img/base/portada.png" class="image" alt="IMAGEX" style="width: 80%" /> -->
 		</div>
 	</div>
 </div>

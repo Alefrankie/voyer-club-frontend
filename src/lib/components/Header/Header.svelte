@@ -4,32 +4,57 @@
 	import Notifications from './Notifications.svelte'
 	import ProfileOptions from './ProfileOptions.svelte'
 	import UserSearchEngine from './UserSearchEngine.svelte'
+	import { page } from '$app/stores'
 </script>
 
-<header class="header" id="site-header">
-	<div class="page-title">
-		<a href="/" class="h6">VoyerClub</a>
-	</div>
+<header>
+	<UserSearchEngine />
+	{#if $page.url.pathname !== '/'}
+		<a href="/">
+			<i class="fas fa-home" />
+		</a>
+	{/if}
 
-	<div class="header-content-wrapper">
-		<UserSearchEngine />
+	<div class="menu">
+		<!-- <Messages /> -->
 
-		<!-- <a href="/suggestions" class="link-find-friend">
-      Sugerencias de Usuarios
-    </a> -->
+		<ProfileOptions />
 
-		<div class="control-block">
-			<Home />
+		<Notifications />
 
-			<Messages />
+		<Messages />
 
-			<Notifications />
-
-			<ProfileOptions />
-		</div>
+		<Home />
 	</div>
 </header>
 
-<!-- ... end Header-BP -->
+<style>
+	header {
+		position: sticky;
+		top: 0;
+		z-index: 1;
 
-<!-- Responsive Header-BP -->
+		height: 5rem;
+		background-color: var(--third-color);
+		display: flex;
+		margin-bottom: 3.5rem;
+		z-index: 1;
+	}
+
+	a {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 18px;
+		color: var(--primary-color);
+	}
+
+	.menu {
+		display: flex;
+		padding-right: 50px;
+		align-items: center;
+		flex-direction: row-reverse;
+		flex: 1;
+		gap: 1rem;
+	}
+</style>

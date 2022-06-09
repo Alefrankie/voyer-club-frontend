@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
 	import LinkToPost from '$lib/components/Links/LinkToPost.svelte'
-	import { HOST_DEFAULT, http } from '$lib/hooks/http'
+	import { HOST_DEFAULT, http } from '$lib/hooks/useFetch'
 
 	export let post
-	export let inputDisabled
+	let inputDisabled = true
 	let textEdited = ''
 
 	function file_extension(filename) {
@@ -11,24 +11,22 @@
 	}
 
 	async function uploadPost() {
-		const postUpdated = await http.Put({
+		await http.Put({
 			url: `/posts/${post.id}`,
-			body: { text: post.text }
+			body: { text: post.text },
 		})
-		// window.alert('Publicación Editada')
-		// window.location.reload()
 		inputDisabled = !inputDisabled
 	}
 </script>
 
 <form on:submit|preventDefault={uploadPost}>
-	<input bind:value={post.text} disabled={inputDisabled} />
+	<input bind:value={post.text} style="color: #B0B3B8;" disabled={inputDisabled} />
 	{#if !inputDisabled}
 		<button class="btn btn-md-12 btn-primary">Actualizar</button>
 	{/if}
 </form>
 
-<LinkToPost id={post.id}>
+<a href="/posts/{post._id}">
 	{#if ['mp4'].includes(file_extension(post.src))}
 		<div class="post-video">
 			<div class="video-thumb">
@@ -59,7 +57,7 @@
 			/>
 		</div>
 	{/if}
-</LinkToPost>
+</a>
 
 <style>
 	input {

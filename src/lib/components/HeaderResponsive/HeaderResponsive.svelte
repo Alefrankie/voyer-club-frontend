@@ -4,7 +4,7 @@
 	import Avatar from '$lib/components/Avatar.svelte'
 	import LinkToUser from '../Links/LinkToUser.svelte'
 	import { useFormatDate } from '$lib/hooks/useFormatDate'
-	import { http } from '$lib/hooks/http'
+	import { http } from '$lib/hooks/useFetch'
 
 	Chats.getChats($session.id)
 
@@ -18,7 +18,7 @@
 	$: if (key.length > 0) {
 		UsersPromise = http
 			.Get({
-				url: `/users/filter/${key}`
+				url: `/users/filter/${key}`,
 			})
 			.then((data) => data.filter((e) => e.id !== $session.id))
 	} else {

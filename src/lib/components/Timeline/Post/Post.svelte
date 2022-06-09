@@ -6,18 +6,23 @@
 	import Comments from './Comments.svelte'
 
 	export let post
-	let inputDisabled: boolean = true
 </script>
 
-<div class="ui-block">
-	<article class="hentry post video">
-		<Header {post} bind:inputDisabled />
+<main>
+	<Header {post} />
 
-		<Content {post} bind:inputDisabled />
+	<Content {post} />
 
-		<Details {post} />
-	</article>
-
+	<Details {post} />
 	<Comments {post} />
-	<FormComment {post} />
-</div>
+	<!-- <FormComment {post} /> -->
+</main>
+
+<style>
+	main {
+		background-color: #242526;
+		border-radius: 10px;
+		padding: 2rem 2rem 1rem 2rem;
+		margin-bottom: 2rem;
+	}
+</style>

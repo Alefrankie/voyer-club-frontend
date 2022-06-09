@@ -1,19 +1,16 @@
 <script>
-	import { session } from '$app/stores';
-	import LinkToUser from '$lib/components/Links/LinkToUser.svelte';
-	import { HOST_DEFAULT, http } from '$lib/hooks/http';
+	import { session } from '$app/stores'
+	import LinkToUser from '$lib/components/Links/LinkToUser.svelte'
+	import { HOST_DEFAULT, http } from '$lib/hooks/useFetch'
 
-	let fetchingSuggestions = (async () => {
-		const suggestions = await http.Post({
-			url: '/find-suggestions',
-			body: {
-				userId: $session.id
-			}
-		});
-		console.log(suggestions);
-		return suggestions.filter(({ id }) => id !== $session.id);
-	})();
+	$: suggestions = http.Get({
+		url: `/api/users/suggestions/`,
+	})
 </script>
+
+<svelte:head>
+	<title>VoyerClub | Sugerencias</title>
+</svelte:head>
 
 <div class="container">
 	<div class="row">
@@ -29,8 +26,8 @@
 
 <div class="container">
 	<div class="row">
-		{#await fetchingSuggestions}
-			<p>Loading...</p>
+		{#await suggestions}
+			<h1>Loading...</h1>
 		{:then suggestions}
 			{#each suggestions as item}
 				<div class="col col-xl-3 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -44,19 +41,6 @@
 								/>
 							</div>
 							<div class="friend-item-content">
-								<div class="more">
-									<svg class="olymp-three-dots-icon"
-										><use xlink:href="#olymp-three-dots-icon" /></svg
-									>
-									<ul class="more-dropdown">
-										<li>
-											<LinkToUser id={item.id}>Ver perfil</LinkToUser>
-										</li>
-										<li>
-											<a href="#/">Reportar perfil</a>
-										</li>
-									</ul>
-								</div>
 								<div class="friend-avatar">
 									<div class="author-thumb">
 										<img
@@ -68,10 +52,10 @@
 										/>
 									</div>
 									<div class="author-content">
-										<LinkToUser id={item.id}>
+										<a href="/users/id" id={item.id}>
 											{item.firstName}
 											{item.lastName}
-										</LinkToUser>
+										</a>
 
 										<!-- <a href="#/" class="h5 author-name">ALEFRANKIE</a> -->
 										<div class="country">@{item.username}</div>
@@ -92,28 +76,29 @@
 
 												<a href="#/" class="friend-count-item">
 													<div class="h6">3</div>
-													<div class="title">Amigos</div>
+													<div class="title">Seguidos</div>
 												</a>
 
 												<a href="#/" class="friend-count-item">
-													<div class="h6">0</div>
-													<div class="title">Fotos</div>
+													<div class="h6">3</div>
+													<div class="title">Amigos</div>
 												</a>
 											</div>
-											<div class="control-block-button" data-swiper-parallax="-100">
-												<a href="#/" class="btn btn-control bg-red">
-													<svg class="olymp-chat---messages-icon">
-														<use xlink:href="#olymp-chat---messages-icon" />
-													</svg>
-												</a>
-
-												<a href="/user/subscribe/?id={item.id}" class="btn btn-control bg-red">
-													<span class="icon-add without-text">
-														<svg class="olymp-happy-face-icon">
-															<use xlink:href="#olymp-happy-face-icon" />
-														</svg>
+											<div
+												class="control-block-button"
+												style="display: flex; justify-content: center;"
+											>
+												<button class="btn btn-control bg-red">
+													<span>
+														<i class="fas fa-comments" />
 													</span>
-												</a>
+												</button>
+
+												<button class="btn btn-control bg-red">
+													<span>
+														<i class="fas fa-user-plus" />
+													</span>
+												</button>
 											</div>
 										</div>
 									</div>

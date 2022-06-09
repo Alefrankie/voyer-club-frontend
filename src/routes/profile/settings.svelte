@@ -1,6 +1,6 @@
 <script>
 	import { session } from '$app/stores'
-	import { http } from '$lib/hooks/http'
+	import { http } from '$lib/hooks/useFetch'
 	import { uppercaseString } from '$lib/utils/string'
 
 	let MENU = 'PersonalInformation'
@@ -12,7 +12,7 @@
 		paypal: $session.paypal,
 		lastName: $session.lastName,
 		email: $session.email,
-		password: $session.password
+		password: $session.password,
 	}
 
 	$: form.firstName = uppercaseString(form.firstName)
@@ -23,7 +23,7 @@
 	const updateProfile = async () => {
 		const data = await http.Post({
 			url: '/users/update-profile',
-			body: form
+			body: form,
 		})
 	}
 
@@ -31,7 +31,7 @@
 		id: $session.id,
 		passActual: '',
 		passNew: '',
-		passConfirm: ''
+		passConfirm: '',
 	}
 	let status = false
 	$: status =
@@ -43,7 +43,7 @@
 		try {
 			const data = await http.Post({
 				url: '/users/update-password',
-				body: formPass
+				body: formPass,
 			})
 		} catch (error) {
 			console.log(error.message)

@@ -1,72 +1,120 @@
 <script>
-  import { session } from '$app/stores';
-  import Avatar from '$lib/components/Avatar.svelte';
+	import { goto } from '$app/navigation'
 
-  async function signOut() {
-    try {
-      session.set(null)
-      localStorage.removeItem('token')
-      window.location.replace('/auth/sign-in')
-    } catch ({ message }) {
-      // Alert = { message, type: 'danger' }
-      alert(message)
-    }
-  }
+	import { session } from '$app/stores'
+	import Avatar from '$lib/components/Avatar.svelte'
+	import { http } from '$lib/hooks/useFetch'
+
+	async function signOut() {
+		await http.Get({
+			url: '/api/users/sign-out',
+		})
+
+		session.set({
+			...$session,
+			authenticated: false,
+		})
+		goto('/auth/sign-in')
+	}
 </script>
 
-<div class="author-page author vcard inline-items more">
-  <div class="author-thumb">
-    <Avatar src={$session.profilePhoto} />
-    <span class="icon-status" class:online={$session.online} />
-    <div class="more-dropdown more-with-triangle">
-      <div class="mCustomScrollbar" data-mcs-theme="dark">
-        <div class="ui-block-title ui-block-title-small">
-          <h6 class="title">Cuenta Personal</h6>
-        </div>
+<main>
+	<figure class="menu__icon">
+		<Avatar src={$session.profilePhoto} />
+	</figure>
 
-        <ul class="account-settings">
-          <li>
-            <a  href="/profile">
-              <i class="fa fa-user" style="padding-right: 5%" />
+	<div class="menu__body">
+		<header>
+			<span class="menu__body__title">Yo</span>
+		</header>
+		<hr />
 
-              <span>Mi Perfil</span>
-            </a>
-          </li>
+		<div class="notifications__list">
+			<ul>
+				<li>
+					<i class="fas fa-user" />
+					<a href="/profile">Mi Perfil</a>
+				</li>
+				<li>
+					<i class="fa fa-sign-out-alt" />
+					<button on:click={signOut}>Cerrar Sesión</button>
+				</li>
+				<hr />
+				<li>
+					<i class="fa fa-sign-out-alt" />
+					<a href="/about">Acerca de</a>
+				</li>
+				<hr />
+				<li>
+					<i class="fa fa-book" />
+					<a href="/terms-and-conditions">Términos y Condiciones</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</main>
 
-          <li>
-            <a href="#/" on:click|preventDefault={signOut}>
-              <i class="fa fa-sign-out-alt" style="padding-right: 5%" />
+<style lang="scss">
+	main {
+		position: relative;
 
-              <span>Cerrar Sesión</span>
-            </a>
-          </li>
-        </ul>
+		&:hover {
+			.menu__body {
+				display: block;
+			}
+		}
+	}
+	.menu__icon {
+		font-size: 18px;
+		color: var(--primary-color);
+	}
 
-        <div class="ui-block-title ui-block-title-small">
-          <h6 class="title">Acerca de VoyerClub</h6>
-        </div>
+	.menu__body {
+		display: block;
+		// display: none;
+		position: absolute;
+		right: 0;
+		border-radius: 10px;
+		padding: 1rem;
+		background-color: var(--third-color);
 
-        <ul>
-          <li>
-            <a href="/terminos-uso">
-              <span>Términos y Condiciones</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <a href="#/" class="author-name fn">
-    <div class="author-title">
-      {$session.firstName}
-      {$session.lastName}
-      <svg class="olymp-dropdown-arrow-icon">
-        <use xlink:href="#olymp-dropdown-arrow-icon" />
-      </svg>
-    </div>
+		width: 300px;
+		header {
+			display: flex;
+			justify-content: space-between;
+			.menu__body__title {
+				color: var(--primary-color);
+				font-size: 16px;
+				font-weight: bold;
+			}
+			button {
+				color: var(--primary-color);
+				&:hover {
+					color: var(--red-color);
+				}
+			}
+		}
 
-    <span class="author-subtitle" style="text-transform: uppercase;"
-      >{$session.username}</span
-    >
-  </a>
-</div>
+		.notifications__list {
+			ul {
+				list-style: none;
+				width: 100%;
+				padding-top: 1rem;
+				font-size: 15px;
+			}
+			li {
+				display: flex;
+				padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+				align-items: center;
+				gap: 0.5rem;
+				a,
+				button {
+					color: var(--primary-color);
+					&:hover {
+						color: var(--red-color);
+					}
+				}
+			}
+		}
+	}
+</style>

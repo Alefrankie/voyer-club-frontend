@@ -1,10 +1,10 @@
 <script>
 	import { goto } from '$app/navigation'
-	import { http } from '$lib/hooks/http'
+	import { http } from '$lib/hooks/useFetch'
 	import { uppercaseString } from '$lib/utils/string'
 
 	let currentUser = {
-		username: ''
+		username: '',
 	}
 
 	$: currentUser.username = uppercaseString(currentUser.username)
@@ -12,7 +12,7 @@
 	async function ForgetPassword() {
 		const msg = await http.Post({
 			url: '/users/forget-password',
-			body: currentUser
+			body: currentUser,
 		})
 		goto('/auth/sign-in')
 	}

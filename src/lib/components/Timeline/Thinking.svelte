@@ -1,7 +1,7 @@
 <script>
 	import { session } from '$app/stores'
 	import Avatar from '$lib/components/Avatar.svelte'
-	import { HOST_DEFAULT } from '$lib/hooks/http'
+	import { HOST_DEFAULT } from '$lib/hooks/useFetch'
 	import { Posts } from '$lib/stores/Posts'
 
 	let src = null
@@ -25,12 +25,12 @@
 			formData.append('file', file)
 		}
 
-		formData.append('user', $session.id)
+		formData.append('user', $session._id)
 		formData.append('text', text)
 
 		await fetch(`${HOST_DEFAULT}/posts/upload`, {
 			body: formData,
-			method: 'POST'
+			method: 'POST',
 		})
 
 		Posts.save($session)
@@ -43,23 +43,6 @@
 
 <div class="ui-block">
 	<div class="news-feed-form">
-		<ul class="nav nav-tabs">
-			{#each ['Multimedia', 'Estado'] as item}
-				<li
-					class="nav-item nav-link inline-items"
-					class:active={menu == item}
-					style="cursor: pointer;"
-					on:click={() => (menu = item)}
-				>
-					<svg class="olymp-multimedia-icon">
-						<use xlink:href="#olymp-multimedia-icon" />
-					</svg>
-
-					<span>{item}</span>
-				</li>
-			{/each}
-		</ul>
-
 		<div class="tab-pane fade active show">
 			<form on:submit|preventDefault={uploadPost} enctype="multipart/form-data">
 				<Avatar src={$session.profilePhoto} />

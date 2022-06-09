@@ -4,7 +4,7 @@
 	import LinkToUser from '$lib/components/Links/LinkToUser.svelte'
 	import Details from '$lib/components/Timeline/Post/Details.svelte'
 	import FormComment from '$lib/components/Timeline/Post/FormComment.svelte'
-	import { HOST_DEFAULT, http } from '$lib/hooks/http'
+	import { HOST_DEFAULT, http } from '$lib/hooks/useFetch'
 	import { useFormatDate } from '$lib/hooks/useFormatDate'
 	import { useQueryString } from '$lib/hooks/useQueryString'
 	import { Posts } from '$lib/stores/Posts'
@@ -23,7 +23,7 @@
 
 	async function deleteComment(postId, commentId) {
 		const postUpdated = await http.Delete({
-			url: `/posts/${postId}/comments/${commentId}`
+			url: `/posts/${postId}/comments/${commentId}`,
 		})
 
 		post = postUpdated

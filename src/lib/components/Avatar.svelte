@@ -1,14 +1,30 @@
 <script>
-	import { HOST_DEFAULT } from '$lib/hooks/http'
+	import { HOST_DEFAULT } from '$lib/hooks/useFetch'
 
-	export let src
+	export let src = null
 </script>
 
-<div class="author-thumb">
-	<img
-		loading="lazy"
-		src={src ? `${HOST_DEFAULT}/files/${src}` : '/img/voyer/profile.png'}
-		style="width: 36px; height: 36px;"
-		alt="author"
-	/>
+<div>
+	<figure>
+		<img
+			loading="lazy"
+			src={src ? `${HOST_DEFAULT}/files/${src}` : '/img/voyer/profile.png'}
+			alt="author"
+		/>
+	</figure>
 </div>
+
+<style lang="scss">
+	figure {
+		width: 40px;
+		height: 40px;
+	}
+
+	img {
+		object-fit: cover;
+		object-position: top;
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+	}
+</style>

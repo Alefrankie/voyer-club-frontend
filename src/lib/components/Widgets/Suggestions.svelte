@@ -1,18 +1,14 @@
-<script>
-	import { session } from '$app/stores';
-	import Avatar from '$lib/components/Avatar.svelte';
-	import { http } from '$lib/hooks/http';
-	import LinkToUser from '../Links/LinkToUser.svelte';
+<script lang="ts">
+	import { browser } from '$app/env'
 
-	let fetchingSuggestions = (async () => {
-		const suggestions = await http.Post({
-			url: '/find-suggestions',
-			body: {
-				userId: $session.id
-			}
-		});
-		return suggestions.filter(({ id }) => id !== $session.id);
-	})();
+	import { session } from '$app/stores'
+	import Avatar from '$lib/components/Avatar.svelte'
+	import { http } from '$lib/hooks/useFetch'
+	import LinkToUser from '../Links/LinkToUser.svelte'
+
+	$: suggestions = http.Get({
+		url: `/api/users/suggestions/`,
+	})
 </script>
 
 <div class="ui-block">
@@ -21,14 +17,14 @@
 	</div>
 
 	<ul class="widget w-friend-pages-added notification-list friend-requests">
-		{#await fetchingSuggestions}
-			<p>Loading...</p>
-		{:then suggestions}
-			{#each suggestions as { id, firstName, lastName, username, profilePhoto }}
+		{#await suggestions}
+			<h1>Loading...</h1>
+		{:then data}
+			{#each data as { id, firstName, lastName, username, profilePhoto }}
 				<li class="inline-items">
 					<Avatar src={profilePhoto} />
 					<div class="notification-event">
-						<LinkToUser id={id} class="h6 notification-friend">
+						<LinkToUser {id} class="h6 notification-friend">
 							{firstName}
 							{lastName}
 						</LinkToUser>
@@ -45,7 +41,7 @@
 				</li>
 			{/each}
 		{:catch error}
-			<p>Error: {error}</p>
+			<!-- promise was rejected -->
 		{/await}
 	</ul>
 	<!-- ... end W-Action -->

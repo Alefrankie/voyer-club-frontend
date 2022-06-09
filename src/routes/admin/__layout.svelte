@@ -1,18 +1,18 @@
 <script>
 	import { session } from '$app/stores'
-	import { http } from '$lib/hooks/http'
+	import { http } from '$lib/hooks/useFetch'
 	import Avatar from '$lib/components/Avatar.svelte'
 
 	async function whoAmI() {
 		const headers = new Headers({
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
-			Authorization: `bearer ${localStorage.getItem('token')}`
+			Authorization: `bearer ${localStorage.getItem('token')}`,
 		})
 
 		const { user } = await http.Get({
 			url: '/users/who-am-i',
-			headers
+			headers,
 		})
 		session.set(user)
 	}

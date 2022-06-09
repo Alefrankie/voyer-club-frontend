@@ -1,4 +1,4 @@
-import { http } from '$lib/hooks/http'
+import { http } from '$lib/hooks/useFetch'
 import { writable, get } from 'svelte/store'
 import { SocketStore } from './Socket'
 
@@ -9,7 +9,7 @@ const createStorePosts = () => {
 		subscribe,
 		getPosts: async (userId) => {
 			const data = await http.Get({
-				url: `/posts/users/${userId}`
+				url: `/posts/users/${userId}`,
 			})
 
 			if (window.location.pathname === '/') return set(data)
@@ -35,7 +35,7 @@ const createStorePosts = () => {
 					if (post.id === postUpdated.id) {
 						return (post.likes = postUpdated.likes)
 					}
-				})
+				}),
 			)
 		},
 		updateComments: async (postUpdated) => {
@@ -44,7 +44,7 @@ const createStorePosts = () => {
 					if (post.id === postUpdated.id) {
 						return (post.comments = postUpdated.comments)
 					}
-				})
+				}),
 			)
 		},
 		deletePost: async (postDeletedId) => {
@@ -52,7 +52,7 @@ const createStorePosts = () => {
 		},
 		wipe: () => {
 			set([])
-		}
+		},
 	}
 }
 

@@ -1,61 +1,99 @@
 <script lang="ts">
-  import { session } from '$app/stores'
-  import Avatar from '$lib/components/Avatar.svelte'
-  import { http } from '$lib/hooks/http'
-  import LinkToUser from '../Links/LinkToUser.svelte'
+	import { session } from '$app/stores'
+	import Avatar from '$lib/components/Avatar.svelte'
+	import { http } from '$lib/hooks/useFetch'
+	import LinkToUser from '../Links/LinkToUser.svelte'
 
-  let response: any = []
-  let key = ''
+	let users: any = []
+	let key = ''
 
-  $: if (key.length > 0) {
-    response = http
-      .Get({
-        url: `/users/filter/${key}`
-      })
-      .then((data) => data.filter((e) => e.id !== $session.id))
-  } else {
-    response = []
-  }
+	$: if (key.length > 0) {
+		users = http.Get({
+			url: `/api/users/filter?key=${key}`,
+		})
+	} else {
+		users = []
+	}
 </script>
 
-<form class="search-bar w-search notification-list friend-requests">
-  <div class="form-group with-button">
-    <input
-      class="form-control"
-      placeholder="Busca aquí personas o páginas..."
-      type="text"
-      bind:value={key}
-    />
+<main>
+	<div class="box-input">
+		<input placeholder="Busca aquí personas o páginas..." type="text" bind:value={key} />
+	</div>
 
-    <div
-      class="selectize-dropdown multi form-control"
-      style="display: block; width: 300px; top: 70px; left: 0px; visibility: visible;"
-    >
-      {#await response}
-        <span class="selectize-dropdown-content">
-          <div class="inline-items">
-            <img class="img-bottom" src="/img/loading.gif" alt="" />
-          </div>
-        </span>
-      {:then users}
-        {#each users as { id, firstName, lastName, username, profilePhoto }}
-          <LinkToUser {id} class="selectize-dropdown-content">
-            <div class="inline-items">
-              <div class="author-thumb">
-                <Avatar src={profilePhoto} />
-              </div>
-              <div class="notification-event">
-                <span class="h6 notification-friend">
-                  {firstName}
-                  {lastName}
-                </span>
-                <span class="chat-message-item">@{username}</span>
-                <br />
-              </div>
-            </div>
-          </LinkToUser>
-        {/each}
-      {/await}
-    </div>
-  </div>
-</form>
+	{#await users}
+		<li>Loading...</li>
+	{:then users}
+		<ul class:list-active={users.length > 0}>
+			{#each users as item}
+				<li>
+					<Avatar />
+					<div>
+						<a href="/users/:id">{item.firstName} {item.lastName}</a>
+						<span>Tú</span>
+					</div>
+				</li>
+			{/each}
+		</ul>
+	{/await}
+</main>
+
+<style lang="scss">
+	main {
+		width: 40%;
+	}
+
+	@media (min-width: 1200px) {
+		main {
+			width: 30%;
+		}
+	}
+	.box-input {
+		display: flex;
+		// border: 1px white solid;
+		flex-direction: column;
+		padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+	}
+	input {
+		border: none;
+		outline: none;
+		padding: 1rem 0 1rem 2rem;
+		font-size: 1.2rem;
+		background-color: var(--secondary-color);
+		border-radius: 50px;
+		color: var(--primary-color);
+	}
+
+	ul {
+		display: none;
+		list-style: none;
+		width: 100%;
+		padding: 0.5rem 0.5rem 0rem 1rem;
+		background-color: var(--third-color);
+	}
+
+	.list-active {
+		display: list-item;
+	}
+
+	li {
+		display: flex;
+		padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+		div {
+			display: flex;
+			flex-direction: column;
+			margin-left: 1rem;
+			font-size: 1.2rem;
+			font-weight: 500;
+			a {
+				color: var(--primary-color);
+				&:hover {
+					color: var(--red-color);
+				}
+			}
+			span {
+				color: var(--text-color);
+			}
+		}
+	}
+</style>
