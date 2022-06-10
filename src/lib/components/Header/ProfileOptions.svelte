@@ -70,8 +70,8 @@
 	}
 
 	.menu__body {
-		display: block;
-		// display: none;
+		// display: block;
+		display: none;
 		position: absolute;
 		right: 0;
 		border-radius: 10px;

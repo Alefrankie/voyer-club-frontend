@@ -62,7 +62,6 @@
 		position: relative;
 		justify-content: center;
 		align-items: center;
-		z-index: 1;
 		gap: 1rem;
 	}
 
