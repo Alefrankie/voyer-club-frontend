@@ -6,7 +6,7 @@
 	let videoRef = undefined
 
 	const socket = io('https://services.voyerclub.com/', {
-		transports: ['polling']
+		transports: ['polling'],
 	})
 
 	let broadcasterId = ''
@@ -14,15 +14,15 @@
 	let broadcastLaunched = false
 	const constraints = {
 		// audio: true,
-		video: { facingMode: 'user' }
+		video: { facingMode: 'user' },
 	}
 
 	const config = {
 		iceServers: [
 			{
-				urls: ['stun:stun.l.google.com:19302']
-			}
-		]
+				urls: ['stun:stun.l.google.com:19302'],
+			},
+		],
 	}
 
 	socket.on('broadcaster', (id) => {
@@ -84,68 +84,78 @@
 		})
 		localStorage.setItem('streamingId', socket.id)
 		socket.emit('broadcaster', { id: socket.id })
+		broadcastLaunched = true
+	}
+
+	const stopBroadcast = () => {
+		socket.emit('disconnectPeer', socket.id)
+		videoRef.pause()
+		videoRef.srcObject = null
+		broadcastLaunched = false
 	}
 </script>
 
 <div class="container">
 	<div class="row">
-		<div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-			<div class="ui-block">
-				<div class="ui-block-title inline-items">
-					<div class="btn btn-control btn-control-small bg-yellow">
-						<svg class="olymp-trophy-icon"><use xlink:href="#olymp-trophy-icon" /> </svg>
-					</div>
-					<h6 class="title">{$session.username}</h6>
-					<div style="float: right; display: flex">
-						<button
-							class="btn btn-primary btn-md-2"
-							disabled={!broadcastLaunched}
-							style=" color: #fff"
-							type="button"
-						>
-							Finalizar Transmisión
-						</button>
-					</div>
-				</div>
-			</div>
+		<div class="col-12" style="display: flex; justify-content: space-between; gap: 1rem">
+			<button
+				class="btn-broadcast"
+				disabled={broadcastLaunched}
+				type="button"
+				on:click={launchBroadcast}
+			>
+				Iniciar
+			</button>
+			<button
+				class="btn-broadcast"
+				disabled={!broadcastLaunched}
+				type="button"
+				on:click={stopBroadcast}
+			>
+				Finalizar
+			</button>
 		</div>
 	</div>
 </div>
+<br />
 
 <div class="container">
 	<div class="row">
-		<div class="col col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-			<div class="ui-block features-video">
-				<div class="video-player">
-					<video
-						autoPlay
-						muted
-						on:canplay={handleCanPlay}
-						playsInline
-						bind:this={videoRef}
-						poster="/img/voyer/profile.png"
-					/>
-					<a href="#/" class="play-video" on:click={launchBroadcast}>
-						<svg class="olymp-play-icon">
-							<use xlink:href="#olymp-play-icon" />
-						</svg>
-					</a>
+		<div class="col-12">
+			<video
+				autoPlay
+				muted
+				on:canplay={handleCanPlay}
+				playsInline
+				bind:this={videoRef}
+				poster="/img/voyer/profile.png"
+			/>
 
-					<div class="video-content">
-						<div class="h4 title">{$session.username}</div>
-					</div>
-
-					<div class="overlay" />
-				</div>
-
-				<ChatBox />
-			</div>
+			<!-- <ChatBox /> -->
 		</div>
 	</div>
 </div>
 
-<style>
+<style lang="scss">
 	video {
 		width: 100%;
+		border: 1px solid var(--border-color);
+		border-radius: 10px;
+		object-fit: cover;
+	}
+
+	.btn-broadcast {
+		border: 1px solid var(--border-color);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--primary-color);
+		width: 50%;
+		border-radius: 10px;
+		font-size: 16px;
+		padding: 0.5rem 0;
+		&:disabled {
+			color: var(--secondary-color);
+		}
 	}
 </style>

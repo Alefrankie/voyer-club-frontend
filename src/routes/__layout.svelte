@@ -46,10 +46,12 @@
 <Header />
 <slot />
 <!-- <OnlineBar /> -->
-<a class="back-to-top" href="/#">
-	<svg class="back-icon" height="18" width="14">
-		<use xlink:href="#olymp-back-to-top" />
-	</svg>
+<a
+	class="back-to-top"
+	href="/#"
+	style="display: flex; justify-content: center; align-items: center;"
+>
+	<i class="fas fa-arrow-up" style="color: var(--primary-color); font-size: 16px" />
 </a>
 
 <div>

@@ -33,7 +33,7 @@
 			<ul>
 				<li>
 					<i class="fas fa-user" />
-					<a href="/profile">Mi Perfil</a>
+					<a href="/{$session.username}">Mi Perfil</a>
 				</li>
 				<li>
 					<i class="fa fa-sign-out-alt" />

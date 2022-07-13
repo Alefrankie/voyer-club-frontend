@@ -5,6 +5,7 @@
 	import Avatar from '$lib/components/Avatar.svelte'
 	import { http } from '$lib/hooks/useFetch'
 	import LinkToUser from '../Links/LinkToUser.svelte'
+	import Loading from '../Loading.svelte'
 
 	$: suggestions = http.Get({
 		url: `/api/users/suggestions/`,
@@ -18,7 +19,7 @@
 
 	<ul class="widget w-friend-pages-added notification-list friend-requests">
 		{#await suggestions}
-			<h1>Loading...</h1>
+			<Loading />
 		{:then data}
 			{#each data as { id, firstName, lastName, username, profilePhoto }}
 				<li class="inline-items">

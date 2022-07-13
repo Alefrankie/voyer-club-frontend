@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { session } from '$app/stores'
 	import Avatar from '$lib/components/Avatar.svelte'
 	import { http } from '$lib/hooks/useFetch'
-	import LinkToUser from '../Links/LinkToUser.svelte'
+	import Loading from '../Loading.svelte'
 
 	let users: any = []
 	let key = ''
@@ -22,7 +21,9 @@
 	</div>
 
 	{#await users}
-		<li>Loading...</li>
+		<li>
+			<Loading />
+		</li>
 	{:then users}
 		<ul class:list-active={users.length > 0}>
 			{#each users as item}

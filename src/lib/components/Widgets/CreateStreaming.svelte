@@ -1,4 +1,5 @@
 <script>
+	import { session } from '$app/stores'
 </script>
 
 <main>
@@ -8,7 +9,7 @@
 	<span class="description">
 		HOLA, MUÉSTRATE EN TODA LA RED PARA QUE TUS SUSCRIPTORES PUEDAN DISFRUTAR!
 	</span>
-	<a href="/profile/streaming" class="btn-broadcast">
+	<a href="/{$session.username}/streaming" class="btn-broadcast">
 		<i class="fa fa-play" style="font-size: 90%; line-height: 0; margin-right: .5rem" />
 		¡Transmitir ahora!
 	</a>
